@@ -1,23 +1,36 @@
-import logo from './logo.svg';
+import { useContext, useEffect } from "react";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import './App.css';
+import { AuthContext } from "./contexts/AuthContext";
+import { Dashboard } from "./components/Dashboard/Dashboard"
+import { Login } from "./components/Login";
+import { SignUp } from "./components/SignUp";
 
 function App() {
+  const { isLoggedIn } = useContext(AuthContext)
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/dashboard")
+    }
+    else {
+      navigate("/login")
+    }
+  }, [isLoggedIn])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <Routes>
+        {isLoggedIn ?
+          (<Route path="dashboard/*" element={<Dashboard />} />)
+          :
+          <>
+            (<Route path="login" element={<Login />} />)
+            (<Route path="signup" element={<SignUp />} />)
+          </>
+        }
+      </Routes>
     </div>
   );
 }
